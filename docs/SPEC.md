@@ -339,7 +339,7 @@ Work in this order. After each step: run tests, tick the box, commit, stop for r
 - [x] **4. Domain** — `models`, `apperr` (codes, messages), `money` + tests.
 - [x] **5. Service** — validation + tests (the sum-to-100 rule).
 - [x] **6. Repository** — pgx pool, `GetBillShares`, `ReplaceShares` (transaction + row lock).
-- [ ] **7. HTTP** — handlers implementing the generated interface, error mapping, middleware (incl. auth placeholder), `main.go` wiring, graceful shutdown; handler test (422 on a bad sum). Check manually with curl.
+- [x] **7. HTTP** — handlers implementing the generated interface, error mapping, middleware (incl. auth placeholder), `main.go` wiring, graceful shutdown; handler test (422 on a bad sum). Check manually with curl.
 - [ ] **8. Frontend foundations** — `constants.ts`, `messages.ts`, `errors.ts`, `status.ts`, `client.ts`, `billsApi.ts`, `utils/money.ts` + tests, `styles/colors.css` + `styles/base.css` (dark theme tokens, see §9a).
 - [ ] **9. Frontend UI** — `useShares` + test, components (table, rows, total, error banner, skeleton, spinner) styled with the color tokens, `App.vue`, Vite dev proxy.
 - [ ] **10. One command** — Dockerfile, `internal/web` embed, full `docker-compose.yml`; verify `docker compose up --build` from a fresh clone.

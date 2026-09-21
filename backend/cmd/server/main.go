@@ -4,16 +4,27 @@ import (
 	"context"
 	"database/sql"
 	"log"
+	"log/slog"
+	"net/http"
+	"os/signal"
+	"syscall"
 	"time"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/pressly/goose/v3"
 
 	"github.com/azulrossini/budde-group-challenge/backend/internal/config"
+	"github.com/azulrossini/budde-group-challenge/backend/internal/handlers"
+	"github.com/azulrossini/budde-group-challenge/backend/internal/repository"
+	"github.com/azulrossini/budde-group-challenge/backend/internal/service"
 	"github.com/azulrossini/budde-group-challenge/backend/migrations"
 )
 
-const startupTimeout = 10 * time.Second
+const (
+	startupTimeout  = 10 * time.Second
+	shutdownTimeout = 10 * time.Second
+)
 
 func main() {
 	cfg, err := config.Load()
@@ -21,25 +32,63 @@ func main() {
 		log.Fatalf("config: %v", err)
 	}
 
-	db, err := sql.Open("pgx", cfg.DatabaseURL)
+	if err := runMigrations(cfg.DatabaseURL); err != nil {
+		log.Fatalf("migrate: %v", err)
+	}
+
+	pool, err := pgxpool.New(context.Background(), cfg.DatabaseURL)
 	if err != nil {
-		log.Fatalf("open database: %v", err)
+		log.Fatalf("open pool: %v", err)
+	}
+	defer pool.Close()
+
+	repo := repository.New(pool)
+	svc := service.New(repo)
+	handler := handlers.NewRouter(handlers.New(svc))
+
+	srv := &http.Server{
+		Addr:    ":" + cfg.Port,
+		Handler: handler,
+	}
+
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
+	go func() {
+		slog.Info("listening", "addr", srv.Addr)
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("listen: %v", err)
+		}
+	}()
+
+	<-ctx.Done()
+	stop()
+	slog.Info("shutting down")
+
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
+	defer cancel()
+	if err := srv.Shutdown(shutdownCtx); err != nil {
+		log.Fatalf("shutdown: %v", err)
+	}
+	slog.Info("shutdown complete")
+}
+
+func runMigrations(databaseURL string) error {
+	db, err := sql.Open("pgx", databaseURL)
+	if err != nil {
+		return err
 	}
 	defer db.Close()
 
 	ctx, cancel := context.WithTimeout(context.Background(), startupTimeout)
 	defer cancel()
 	if err := db.PingContext(ctx); err != nil {
-		log.Fatalf("ping database: %v", err)
+		return err
 	}
 
 	goose.SetBaseFS(migrations.FS)
 	if err := goose.SetDialect("postgres"); err != nil {
-		log.Fatalf("goose dialect: %v", err)
+		return err
 	}
-	if err := goose.Up(db, "."); err != nil {
-		log.Fatalf("run migrations: %v", err)
-	}
-
-	log.Println("split-bill backend: migrations applied, HTTP server not wired up yet")
+	return goose.Up(db, ".")
 }
