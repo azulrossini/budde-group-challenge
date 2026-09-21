@@ -1,0 +1,6 @@
+// Package api holds generated DTOs and the strict server interface declared
+// by contract/openapi.yaml. Do not hand-edit api.gen.go; change the contract
+// and run `make generate` instead.
+package api
+
+//go:generate go tool oapi-codegen -config ../../../contract/oapi-codegen.yaml ../../../contract/openapi.yaml
