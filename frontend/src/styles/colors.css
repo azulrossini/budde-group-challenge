@@ -1,0 +1,25 @@
+:root {
+  /* Backgrounds, layered from page to elevated surfaces */
+  --color-bg: #0b0e14;
+  --color-surface: #12161f;
+  --color-surface-raised: #1a1f2b;
+
+  /* Text */
+  --color-text: #f4f6fb;
+  --color-text-muted: #8b93a7;
+
+  /* Accent (blue) — interactive elements, focus rings, primary actions */
+  --color-accent: #3b82f6;
+  --color-accent-hover: #60a5fa;
+  --color-accent-muted: rgba(59, 130, 246, 0.16);
+
+  /* Borders / dividers */
+  --color-border: #262c3a;
+
+  /* Status — the only non-blue/grey hues, used for the total-mismatch
+     warning, error feedback, and a save-succeeded indicator */
+  --color-error: #f87171;
+  --color-error-muted: rgba(248, 113, 113, 0.14);
+  --color-success: #34d399;
+  --color-success-muted: rgba(52, 211, 153, 0.14);
+}
