@@ -329,7 +329,7 @@ Scoped, deliberate addition to the brief (see amendment in §1). Goal: modern, d
 Work in this order. After each step: run tests, tick the box, commit, stop for review.
 
 - [ ] **1. Skeleton** — repo layout, `go mod init`, `npm create vue@latest` (TypeScript + Vitest), Makefile, `.gitignore`, `.env.example`.
-- [ ] **2. Contract** — `contract/openapi.yaml`, codegen config, `make generate`, commit generated Go + TS files.
+- [x] **2. Contract** — `contract/openapi.yaml`, codegen config, `make generate`, commit generated Go + TS files.
 - [ ] **3. Database** — `001_init.sql`, docker-compose `db` service, goose migrations on startup.
 - [ ] **4. Domain** — `models`, `apperr` (codes, messages), `money` + tests.
 - [ ] **5. Service** — validation + tests (the sum-to-100 rule).
