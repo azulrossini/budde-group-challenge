@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { NTable } from 'naive-ui'
 import type { RowError, ShareRowData } from '../composables/useShares'
 import ShareRow from './ShareRow.vue'
 
@@ -17,7 +18,7 @@ defineEmits<{
 </script>
 
 <template>
-  <table class="shares-table">
+  <NTable class="shares-table" :single-line="false">
     <thead>
       <tr>
         <th>Name</th>
@@ -41,39 +42,11 @@ defineEmits<{
         @remove="$emit('remove', row.key)"
       />
     </tbody>
-  </table>
+  </NTable>
 </template>
 
 <style scoped>
-.shares-table {
-  width: 100%;
-  border-collapse: collapse;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--color-surface);
-}
-
-th {
-  text-align: left;
-  padding: 0.6rem 0.75rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--color-text-muted);
-  border-bottom: 1px solid var(--color-border);
-}
-
-:deep(td) {
-  padding: 0.6rem 0.75rem;
-  border-bottom: 1px solid var(--color-border);
+.shares-table :deep(td) {
   vertical-align: top;
-}
-
-:deep(tr:last-child td) {
-  border-bottom: none;
-}
-
-:deep(tr:hover td) {
-  background: var(--color-surface-raised);
 }
 </style>

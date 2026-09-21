@@ -16,8 +16,11 @@
   /* Borders / dividers */
   --color-border: #262c3a;
 
-  /* Status — the only non-blue/grey hues, used for the total-mismatch
-     warning, error feedback, and a save-succeeded indicator */
+  /* Status — the only non-blue/grey hues: a warning tone (total ≠ 100,
+     non-blocking), an error tone (API/save failures), and a success tone
+     (saved) */
+  --color-warning: #fbbf24;
+  --color-warning-muted: rgba(251, 191, 36, 0.14);
   --color-error: #f87171;
   --color-error-muted: rgba(248, 113, 113, 0.14);
   --color-success: #34d399;

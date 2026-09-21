@@ -43,6 +43,7 @@ Technical task, **timebox 2 hours**. A tiny app to split a bill between people b
 | Migrations | `github.com/pressly/goose/v3` with SQL files embedded via `embed` |
 | Codegen (Go) | `github.com/oapi-codegen/oapi-codegen/v2` — models + std-http strict server |
 | Frontend | Vue 3 + Vite + TypeScript (`npm create vue@latest`, with Vitest) |
+| Component library | Naive UI (dark theme via `n-config-provider`, `theme-overrides` derived from `colors.css` at runtime) |
 | Codegen (TS) | `openapi-typescript` |
 | Database | Postgres (official image, with healthcheck) |
 | Run | Docker Compose + multi-stage Dockerfile |
@@ -102,14 +103,14 @@ split-bill/
       styles/
         colors.css               # ALL color tokens as CSS custom properties (dark theme, white/blue/grey accents) — see §9a
         base.css                  # resets, typography, layout primitives; imports colors.css; no color literals
+        naiveTheme.ts             # reads colors.css tokens at runtime into a Naive UI GlobalThemeOverrides object
       components/
-        SharesTable.vue
-        ShareRow.vue
+        SharesTable.vue          # wraps Naive UI's n-table
+        ShareRow.vue             # n-input fields, n-button remove
         TotalSummary.vue
-        ErrorBanner.vue         # shows ApiError message + requestId; optional Retry action
-        SharesSkeleton.vue      # loading placeholder rows
-        LoadingSpinner.vue      # small inline spinner (used in the Save button)
-      App.vue
+        ErrorBanner.vue         # n-alert; shows ApiError message + requestId; optional Retry action
+        SharesSkeleton.vue      # n-skeleton loading placeholder rows
+      App.vue                   # n-config-provider (dark theme + naiveTheme overrides) wraps the page
 ```
 
 ---
@@ -259,7 +260,7 @@ Limits are named constants (`MAX_NAME_LENGTH = 100`, `MAX_SHARES = 50`).
 |---|---|
 | Initial load (`Loading`) | `SharesSkeleton` — 3 placeholder rows with a simple pulse animation, in place of the table |
 | Load failed (`Error`) | `ErrorBanner` with a **Retry** button that calls `load()` again |
-| Saving (`isSaving = true`) | Save button disabled, shows `LoadingSpinner` + "Saving…"; inputs and add/remove buttons disabled |
+| Saving (`isSaving = true`) | Save button disabled, `n-button`'s built-in `:loading` spinner + "Saving…"; inputs and add/remove buttons disabled |
 | Save succeeded | Replace local state with the server response; brief success message |
 | Save failed | `ErrorBanner` + field errors; the user's edits are kept so nothing is lost |
 
@@ -271,15 +272,15 @@ Styling follows the dark theme in §9a; keep components simple and reuse the col
 
 Scoped, deliberate addition to the brief (see amendment in §1). Goal: modern, dark UI with white/blue/grey accents and highlights.
 
-- **All color values live in one file:** `frontend/src/styles/colors.css`, as CSS custom properties on `:root`. No hex/rgb/hsl literal is allowed in a component's `<style>` block or in TS/JS — components consume `var(--color-*)` tokens only.
+- **All color values live in one file:** `frontend/src/styles/colors.css`, as CSS custom properties on `:root`. No hex/rgb/hsl literal is allowed in a component's `<style>` block or in TS/JS — components consume `var(--color-*)` tokens only. Naive UI's `theme-overrides` can't reference `var(...)` directly (it does its own color math), so `styles/naiveTheme.ts` resolves the same tokens via `getComputedStyle` at app startup and feeds the resolved values into `n-config-provider` — `colors.css` stays the single source of truth either way.
 - **Palette shape:**
   - Backgrounds: near-black / dark charcoal surfaces, layered (`--color-bg`, `--color-surface`, `--color-surface-raised`) for depth (page vs. card vs. row).
   - Text: white/off-white primary text, muted grey secondary text (`--color-text`, `--color-text-muted`).
   - Accent: a single blue accent family for interactive elements, focus rings, primary actions, and the running-total indicator when it's valid (`--color-accent`, `--color-accent-hover`, `--color-accent-muted`).
   - Borders/dividers: subtle grey, low-contrast against the dark surfaces (`--color-border`).
-  - Status: keep the palette restricted to white/blue/grey plus the minimum needed for error/success feedback (e.g. a warning tone for "total ≠ 100" and a success tone for "saved") — these are the only non-blue/grey hues, and they're also tokens, not literals.
+  - Status: keep the palette restricted to white/blue/grey plus the minimum needed for status feedback — an amber warning tone for "total ≠ 100" (non-blocking, correctable), a red error tone for API/save failures, and a green success tone for "saved". These three are the only non-blue/grey hues, and they're also tokens (`--color-warning`, `--color-error`, `--color-success`), not literals.
 - **Structure:** `colors.css` defines tokens only (no component selectors). `base.css` imports it and sets global resets, typography, and the dark `background`/`color` on `body`. Component `<style scoped>` blocks reference tokens via `var(--color-*)`.
-- Keep the rest of the UI simple: the dark theme is about color tokens and basic layout polish (spacing, borders, hover/focus states), not a component library or animation work beyond the existing skeleton/spinner.
+- **Component library:** Naive UI (post-brief addition, requested explicitly), used with its built-in `darkTheme` as a base and `naiveTheme.ts`'s overrides layered on top so inputs, buttons, alerts, and the skeleton match this palette exactly rather than Naive's defaults.
 
 ---
 

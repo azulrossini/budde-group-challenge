@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { NButton, NInput } from 'naive-ui'
 import { formatCents } from '../utils/money'
 
 defineProps<{
@@ -10,89 +11,49 @@ defineProps<{
   disabled: boolean
 }>()
 
-const emit = defineEmits<{
+defineEmits<{
   'update:name': [name: string]
   'update:percentage': [value: string]
   remove: []
 }>()
-
-function onNameInput(event: Event) {
-  emit('update:name', (event.target as HTMLInputElement).value)
-}
-
-function onPercentageInput(event: Event) {
-  emit('update:percentage', (event.target as HTMLInputElement).value)
-}
 </script>
 
 <template>
   <tr class="share-row">
     <td>
-      <input
-        type="text"
-        class="field"
-        :class="{ invalid: nameError }"
+      <NInput
         :value="name"
+        :status="nameError ? 'error' : undefined"
         :disabled="disabled"
         placeholder="Name"
-        @input="onNameInput"
+        @update:value="(value: string) => $emit('update:name', value)"
       />
       <p v-if="nameError" class="field-error">{{ nameError }}</p>
     </td>
     <td>
-      <input
-        type="text"
-        inputmode="decimal"
-        class="field percentage"
-        :class="{ invalid: percentageError }"
+      <NInput
         :value="percentageInput"
+        :status="percentageError ? 'error' : undefined"
         :disabled="disabled"
+        :input-props="{ inputmode: 'decimal' }"
+        class="percentage-field"
         placeholder="0"
-        @input="onPercentageInput"
+        @update:value="(value: string) => $emit('update:percentage', value)"
       />
       <p v-if="percentageError" class="field-error">{{ percentageError }}</p>
     </td>
     <td class="amount">{{ amountCents !== null ? formatCents(amountCents) : '—' }}</td>
     <td class="remove-cell">
-      <button
-        type="button"
-        class="remove"
-        :disabled="disabled"
-        aria-label="Remove person"
-        @click="$emit('remove')"
-      >
+      <NButton circle quaternary :disabled="disabled" aria-label="Remove person" @click="$emit('remove')">
         ✕
-      </button>
+      </NButton>
     </td>
   </tr>
 </template>
 
 <style scoped>
-.field {
-  width: 100%;
-  padding: 0.5rem 0.6rem;
-  border-radius: 6px;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface-raised);
-  color: var(--color-text);
-}
-
-.field:focus {
-  outline: none;
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 2px var(--color-accent-muted);
-}
-
-.field.invalid {
-  border-color: var(--color-error);
-}
-
-.field.percentage {
+.percentage-field {
   max-width: 6rem;
-}
-
-.field:disabled {
-  opacity: 0.6;
 }
 
 .field-error {
@@ -108,25 +69,5 @@ function onPercentageInput(event: Event) {
 
 .remove-cell {
   text-align: center;
-}
-
-.remove {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 6px;
-  border: 1px solid var(--color-border);
-  background: transparent;
-  color: var(--color-text-muted);
-  cursor: pointer;
-}
-
-.remove:hover:not(:disabled) {
-  border-color: var(--color-error);
-  color: var(--color-error);
-}
-
-.remove:disabled {
-  opacity: 0.5;
-  cursor: default;
 }
 </style>
