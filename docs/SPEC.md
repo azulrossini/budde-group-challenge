@@ -330,7 +330,7 @@ Work in this order. After each step: run tests, tick the box, commit, stop for r
 
 - [ ] **1. Skeleton** — repo layout, `go mod init`, `npm create vue@latest` (TypeScript + Vitest), Makefile, `.gitignore`, `.env.example`.
 - [x] **2. Contract** — `contract/openapi.yaml`, codegen config, `make generate`, commit generated Go + TS files.
-- [ ] **3. Database** — `001_init.sql`, docker-compose `db` service, goose migrations on startup.
+- [x] **3. Database** — `001_init.sql`, docker-compose `db` service, goose migrations on startup.
 - [ ] **4. Domain** — `models`, `apperr` (codes, messages), `money` + tests.
 - [ ] **5. Service** — validation + tests (the sum-to-100 rule).
 - [ ] **6. Repository** — pgx pool, `GetBillShares`, `ReplaceShares` (transaction + row lock).
