@@ -1,0 +1,8 @@
+.git
+**/node_modules
+frontend/dist
+backend/server
+backend/internal/web/dist/*
+!backend/internal/web/dist/.gitkeep
+*.log
+.env
