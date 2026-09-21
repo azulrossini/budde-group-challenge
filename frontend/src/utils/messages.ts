@@ -9,7 +9,9 @@ export const MSG_INTERNAL = 'Something went wrong. Try again.'
 export const MSG_NAME_REQUIRED = 'Name is required.'
 export const MSG_DUPLICATE_NAME = 'Name must be unique.'
 export const MSG_PERCENTAGE_OUT_OF_RANGE = 'Percentage must be greater than 0 and at most 100.00.'
+export const MSG_INVALID_PERCENTAGE = 'Enter a valid percentage (e.g. 33.33).'
 export const MSG_AT_LEAST_ONE_SHARE = 'At least one share is required.'
+export const MSG_SAVE = 'Save'
 
 export function nameTooLongMessage(max: number): string {
   return `Name must be at most ${max} characters.`

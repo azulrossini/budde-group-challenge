@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatCents, parsePercentage, split } from './money'
+import { basisPointsToInput, formatCents, formatPercentage, parsePercentage, split } from './money'
 
 describe('parsePercentage', () => {
   it.each([
@@ -21,6 +21,23 @@ describe('formatCents', () => {
   it('formats cents as euros', () => {
     expect(formatCents(12050)).toBe('€120.50')
     expect(formatCents(0)).toBe('€0.00')
+  })
+})
+
+describe('formatPercentage', () => {
+  it('renders basis points with a % suffix', () => {
+    expect(formatPercentage(3333)).toBe('33.33 %')
+    expect(formatPercentage(10000)).toBe('100.00 %')
+  })
+})
+
+describe('basisPointsToInput', () => {
+  it('drops trailing zeros for whole percentages', () => {
+    expect(basisPointsToInput(5000)).toBe('50')
+  })
+
+  it('keeps the fraction for non-whole percentages', () => {
+    expect(basisPointsToInput(3333)).toBe('33.33')
   })
 })
 
