@@ -17,11 +17,28 @@ export function parsePercentage(input: string): number | null {
   return Number(wholePart) * 100 + Number(paddedFraction)
 }
 
-// formatPercentage renders basis points as "33.33 %".
-export function formatPercentage(basisPoints: number): string {
+// formatPercentageValue renders basis points as "33.33" (no unit suffix).
+export function formatPercentageValue(basisPoints: number): string {
   const whole = Math.trunc(basisPoints / 100)
   const fraction = String(Math.abs(basisPoints % 100)).padStart(MAX_DECIMAL_PLACES, '0')
-  return `${whole}.${fraction} %`
+  return `${whole}.${fraction}`
+}
+
+// formatPercentage renders basis points as "33.33 %".
+export function formatPercentage(basisPoints: number): string {
+  return `${formatPercentageValue(basisPoints)} %`
+}
+
+// basisPointsToInput renders basis points as a plain editable value
+// ("50", "33.33") — like formatPercentageValue, but without a trailing
+// ".00" for whole percentages, since that reads awkwardly in a text input.
+export function basisPointsToInput(basisPoints: number): string {
+  const whole = Math.trunc(basisPoints / 100)
+  const fraction = basisPoints % 100
+  if (fraction === 0) {
+    return String(whole)
+  }
+  return `${whole}.${String(Math.abs(fraction)).padStart(MAX_DECIMAL_PLACES, '0')}`
 }
 
 // formatCents renders integer cents as a localized euro amount.
