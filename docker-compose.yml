@@ -10,7 +10,7 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-splitbill}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-splitbill} -d ${POSTGRES_DB:-splitbill}"]
       interval: 2s
       timeout: 3s
       retries: 10

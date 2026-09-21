@@ -162,7 +162,9 @@ Every operation documents `400`, `404`, `422` and `500` responses with `ErrorRes
 
 ---
 
-## 6. Database (`backend/migrations/001_init.sql`)
+## 6. Database (`backend/migrations/001_init.sql`, `002_seed.sql`)
+
+Schema (`001_init.sql`):
 
 ```sql
 CREATE TABLE bills (
@@ -180,8 +182,11 @@ CREATE TABLE shares (
 );
 
 CREATE UNIQUE INDEX shares_bill_person_unique ON shares (bill_id, lower(person_name));
+```
 
--- Seed: one bill with a valid split so the app is usable on first run.
+Seed data, in its own migration (`002_seed.sql`) so schema and data can evolve independently:
+
+```sql
 INSERT INTO bills (id, description, total_cents) VALUES (1, 'Team dinner', 12050);
 INSERT INTO shares (bill_id, person_name, percentage_bp) VALUES
   (1, 'Alice', 5000), (1, 'Bob', 3000), (1, 'Carol', 2000);

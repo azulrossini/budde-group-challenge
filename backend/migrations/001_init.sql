@@ -15,11 +15,6 @@ CREATE TABLE shares (
 
 CREATE UNIQUE INDEX shares_bill_person_unique ON shares (bill_id, lower(person_name));
 
-INSERT INTO bills (id, description, total_cents) VALUES (1, 'Team dinner', 12050);
-INSERT INTO shares (bill_id, person_name, percentage_bp) VALUES
-  (1, 'Alice', 5000), (1, 'Bob', 3000), (1, 'Carol', 2000);
-SELECT setval('bills_id_seq', (SELECT max(id) FROM bills));
-
 -- +goose Down
 DROP TABLE shares;
 DROP TABLE bills;

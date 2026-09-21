@@ -1,8 +1,10 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"log"
+	"time"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/pressly/goose/v3"
@@ -10,6 +12,8 @@ import (
 	"github.com/azulrossini/budde-group-challenge/backend/internal/config"
 	"github.com/azulrossini/budde-group-challenge/backend/migrations"
 )
+
+const startupTimeout = 10 * time.Second
 
 func main() {
 	cfg, err := config.Load()
@@ -22,6 +26,12 @@ func main() {
 		log.Fatalf("open database: %v", err)
 	}
 	defer db.Close()
+
+	ctx, cancel := context.WithTimeout(context.Background(), startupTimeout)
+	defer cancel()
+	if err := db.PingContext(ctx); err != nil {
+		log.Fatalf("ping database: %v", err)
+	}
 
 	goose.SetBaseFS(migrations.FS)
 	if err := goose.SetDialect("postgres"); err != nil {

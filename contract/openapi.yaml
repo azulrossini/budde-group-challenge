@@ -139,6 +139,7 @@ components:
 
     ShareInput:
       type: object
+      additionalProperties: false
       required: [name, percentageBasisPoints]
       properties:
         name:
@@ -149,6 +150,7 @@ components:
 
     ReplaceSharesRequest:
       type: object
+      additionalProperties: false
       required: [shares]
       properties:
         shares:
