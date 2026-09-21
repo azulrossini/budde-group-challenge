@@ -4,10 +4,11 @@ import (
 	"testing"
 
 	"github.com/azulrossini/budde-group-challenge/backend/internal/apperr"
+	"github.com/azulrossini/budde-group-challenge/backend/internal/models"
 )
 
 func TestValidateReplaceShares_Valid(t *testing.T) {
-	err := ValidateReplaceShares([]ShareInput{
+	err := ValidateReplaceShares([]models.ShareInput{
 		{Name: "Alice", PercentageBasisPoints: 5000},
 		{Name: "Bob", PercentageBasisPoints: 3000},
 		{Name: "Carol", PercentageBasisPoints: 2000},
@@ -20,52 +21,52 @@ func TestValidateReplaceShares_Valid(t *testing.T) {
 func TestValidateReplaceShares_Rejections(t *testing.T) {
 	tests := []struct {
 		name   string
-		inputs []ShareInput
+		inputs []models.ShareInput
 	}{
 		{
 			name: "sum below 100.00",
-			inputs: []ShareInput{
+			inputs: []models.ShareInput{
 				{Name: "Alice", PercentageBasisPoints: 4999},
 				{Name: "Bob", PercentageBasisPoints: 5000},
 			},
 		},
 		{
 			name: "sum above 100.00",
-			inputs: []ShareInput{
+			inputs: []models.ShareInput{
 				{Name: "Alice", PercentageBasisPoints: 5001},
 				{Name: "Bob", PercentageBasisPoints: 5000},
 			},
 		},
 		{
 			name: "zero percentage",
-			inputs: []ShareInput{
+			inputs: []models.ShareInput{
 				{Name: "Alice", PercentageBasisPoints: 0},
 				{Name: "Bob", PercentageBasisPoints: 10000},
 			},
 		},
 		{
 			name: "negative percentage",
-			inputs: []ShareInput{
+			inputs: []models.ShareInput{
 				{Name: "Alice", PercentageBasisPoints: -100},
 				{Name: "Bob", PercentageBasisPoints: 10100},
 			},
 		},
 		{
 			name: "empty name",
-			inputs: []ShareInput{
+			inputs: []models.ShareInput{
 				{Name: "   ", PercentageBasisPoints: 10000},
 			},
 		},
 		{
 			name: "duplicate name, case-insensitive",
-			inputs: []ShareInput{
+			inputs: []models.ShareInput{
 				{Name: "Alice", PercentageBasisPoints: 5000},
 				{Name: "alice", PercentageBasisPoints: 5000},
 			},
 		},
 		{
 			name:   "empty list",
-			inputs: []ShareInput{},
+			inputs: []models.ShareInput{},
 		},
 	}
 
@@ -86,7 +87,7 @@ func TestValidateReplaceShares_Rejections(t *testing.T) {
 }
 
 func TestValidateReplaceShares_ReturnsAllErrorsAtOnce(t *testing.T) {
-	err := ValidateReplaceShares([]ShareInput{
+	err := ValidateReplaceShares([]models.ShareInput{
 		{Name: "", PercentageBasisPoints: -100},
 		{Name: "Alice", PercentageBasisPoints: 5000},
 		{Name: "alice", PercentageBasisPoints: 200000},
