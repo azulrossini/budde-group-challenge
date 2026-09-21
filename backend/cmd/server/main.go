@@ -18,6 +18,7 @@ import (
 	"github.com/azulrossini/budde-group-challenge/backend/internal/handlers"
 	"github.com/azulrossini/budde-group-challenge/backend/internal/repository"
 	"github.com/azulrossini/budde-group-challenge/backend/internal/service"
+	"github.com/azulrossini/budde-group-challenge/backend/internal/web"
 	"github.com/azulrossini/budde-group-challenge/backend/migrations"
 )
 
@@ -44,7 +45,13 @@ func main() {
 
 	repo := repository.New(pool)
 	svc := service.New(repo)
-	handler := handlers.NewRouter(handlers.New(svc))
+
+	spa, err := web.New()
+	if err != nil {
+		log.Fatalf("web: %v", err)
+	}
+
+	handler := handlers.NewRouter(handlers.New(svc), spa)
 
 	srv := &http.Server{
 		Addr:    ":" + cfg.Port,

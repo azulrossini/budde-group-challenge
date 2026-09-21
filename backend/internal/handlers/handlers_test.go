@@ -29,7 +29,7 @@ func (f *fakeRepository) ReplaceShares(ctx context.Context, billID int64, inputs
 
 func TestReplaceBillShares_InvalidSum_Returns422(t *testing.T) {
 	repo := &fakeRepository{bill: models.Bill{ID: 1, Description: "Team dinner", TotalCents: 12050}}
-	router := handlers.NewRouter(handlers.New(service.New(repo)))
+	router := handlers.NewRouter(handlers.New(service.New(repo)), nil)
 
 	body, err := json.Marshal(api.ReplaceSharesRequest{
 		Shares: []api.ShareInput{
