@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/azulrossini/budde-group-challenge/backend/internal/apperr"
+	"github.com/azulrossini/budde-group-challenge/backend/internal/models"
 	"github.com/azulrossini/budde-group-challenge/backend/internal/money"
 )
 
@@ -30,15 +31,10 @@ const (
 	msgValidationFailed     = "validation failed"
 )
 
-type ShareInput struct {
-	Name                  string
-	PercentageBasisPoints int32
-}
-
 // ValidateReplaceShares checks the rules from docs/SPEC.md §7 and returns a
 // single *apperr.Error carrying every violation found, or nil if the input
 // is valid.
-func ValidateReplaceShares(inputs []ShareInput) *apperr.Error {
+func ValidateReplaceShares(inputs []models.ShareInput) *apperr.Error {
 	var details []apperr.FieldError
 
 	if len(inputs) == 0 {

@@ -17,3 +17,8 @@ type BillShares struct {
 	Bill   Bill
 	Shares []Share
 }
+
+type ShareInput struct {
+	Name                  string
+	PercentageBasisPoints int32
+}
