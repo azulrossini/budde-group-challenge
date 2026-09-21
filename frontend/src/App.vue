@@ -1,6 +1,4 @@
-<script setup lang="ts">
-// Skeleton only. Wired up to the shares UI in step 9.
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <main>
