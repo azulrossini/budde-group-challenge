@@ -325,7 +325,7 @@ Scoped, deliberate addition to the brief (see amendment in §1). Goal: modern, d
 
 1. **Run:** `docker compose up --build` → http://localhost:8080. Tests: `make test`.
 2. **Decisions:** integers for money/percentages (basis points + cents); largest-remainder rounding; OpenAPI contract as shared source of truth with generated Go/TS types; layered backend; sum rule in the service (not the DB); row lock for concurrent PUTs; Go serves the SPA (one container, no CORS); Postgres; dark theme with all color tokens centralized in `colors.css`.
-3. **With a week:** real auth; optimistic concurrency (a `version` column + `409 Conflict`); multiple bills; e2e tests; CI; deployment (Render/Fly.io/Railway + managed Postgres, config already via env vars); a proper design system / component library.
+3. **With a week:** real auth; optimistic concurrency (a `version` column + `409 Conflict`); multiple bills; click-to-edit UX and an editable bill total; e2e tests; CI; deployment (Render/Fly.io/Railway + managed Postgres, config already via env vars).
 4. **Left out on purpose:** auth (placeholder middleware left), multiple bills UI, CI, deployment.
 
 ---
@@ -334,7 +334,7 @@ Scoped, deliberate addition to the brief (see amendment in §1). Goal: modern, d
 
 Work in this order. After each step: run tests, tick the box, commit, stop for review.
 
-- [ ] **1. Skeleton** — repo layout, `go mod init`, `npm create vue@latest` (TypeScript + Vitest), Makefile, `.gitignore`, `.env.example`.
+- [x] **1. Skeleton** — repo layout, `go mod init`, `npm create vue@latest` (TypeScript + Vitest), Makefile, `.gitignore`, `.env.example`.
 - [x] **2. Contract** — `contract/openapi.yaml`, codegen config, `make generate`, commit generated Go + TS files.
 - [x] **3. Database** — `001_init.sql`, docker-compose `db` service, goose migrations on startup.
 - [x] **4. Domain** — `models`, `apperr` (codes, messages), `money` + tests.
@@ -344,4 +344,4 @@ Work in this order. After each step: run tests, tick the box, commit, stop for r
 - [x] **8. Frontend foundations** — `constants.ts`, `messages.ts`, `errors.ts`, `status.ts`, `client.ts`, `billsApi.ts`, `utils/money.ts` + tests, `styles/colors.css` + `styles/base.css` (dark theme tokens, see §9a).
 - [x] **9. Frontend UI** — `useShares` + test, components (table, rows, total, error banner, skeleton, spinner) styled with the color tokens, `App.vue`, Vite dev proxy.
 - [x] **10. One command** — Dockerfile, `internal/web` embed, full `docker-compose.yml`; verify `docker compose up --build` from a fresh clone.
-- [ ] **11. README** — following §13.
+- [x] **11. README** — following §13.
